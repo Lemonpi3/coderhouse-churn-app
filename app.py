@@ -1,3 +1,4 @@
+import imp
 import os
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ import matplotlib.pyplot as plt
 from scripts import utils
 from scripts.setuppage import SetupPage
 from scripts.storytelling import StoryTelling,DataInfo
+from scripts.homepage import HomePage
 import json
 
 with open("appconfig.json", "r") as f:
@@ -20,11 +22,11 @@ side_bar_txt = {
     "ES":{
         "LanguageSelect":"Lenguage (updates after changing page)",
         'NavigationLable':"Navegación",
-        "NavigationOptions":["Configuración", "Info de la Data", "Stortylling", "3",]},
+        "NavigationOptions":["Inicio", "Info de la Data", "Stortylling", "3","Configuración"]},
     "EN":{
         "LanguageSelect":"Language (se updatea al cambiar de página)",
         'NavigationLable':"Navigation",
-        "NavigationOptions":["Config", "Data info", "Stortylling", "3",]
+        "NavigationOptions":["Home", "Data info", "Stortylling", "3","Config"]
     }
 }
 with st.sidebar:
@@ -39,11 +41,15 @@ with st.sidebar:
         with open("appconfig.json", "w") as jsonfile:
             json_conf = json.dump(data, jsonfile)
             jsonfile.close()
-
-#config
+#home
 if page == side_bar_txt[config["lang"]]["NavigationOptions"][0]:
+    HomePage()
+#config
+if page == side_bar_txt[config["lang"]]["NavigationOptions"][-1]:
     SetupPage()
+#datainfo
 if page == side_bar_txt[config["lang"]]["NavigationOptions"][1]:
     DataInfo()
+#storytelling
 if page == side_bar_txt[config["lang"]]["NavigationOptions"][2]:
     StoryTelling()
