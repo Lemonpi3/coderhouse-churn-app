@@ -20,7 +20,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 side_bar_txt = {
     "ES":{
-        "LanguageSelect":"Lenguage (updates after changing page)",
+        "LanguageSelect":"Lenguaje (updates after changing page)",
         'NavigationLable':"Navegación",
         "NavigationOptions":["Inicio", "Info de la Data", "Stortylling", "3","Configuración"]},
     "EN":{
