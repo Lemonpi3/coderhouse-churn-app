@@ -4,6 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.basemap import Basemap
+import squarify
+import textwrap
 
 def palplot(pal, size=1, ax=None, fig=None):
     """Plot the values in a color palette as a horizontal array.
@@ -124,4 +126,106 @@ def top_15_ciudad_county_percent(df,figsize=(6,10),title_city='',title_county=''
     for i, v in enumerate(round(representation_of_county[:15],2).values):
         ax[1].text(v+.1, i + .25, str(v)+'%', fontweight=fontdict['weight'],color=fontdict['color'],fontsize=fontdict['size'])
 
+    fig.patch.set_alpha(0.0)
+
+def plot_box_map(df, colors, figsize=(4,4),warp_width=10, county = 'All',cat = 'All', fontdict = {'color': 'white','fontsize':10, 'fontweight':'bold','horizontalalignment':'center',}):
+    if county != 'All':
+        if cat == 'All':
+            cond = (
+            (df['Churn Reason'] != 'Moved') & 
+            (df['Churn Reason'] != 'Deceased') & 
+            (df['Churn Reason'] !="Don't know") & 
+            (df['County'] == county)
+            )
+        else:
+            cond = (
+            (df['Churn Reason'] != 'Moved') & 
+            (df['Churn Reason'] != 'Deceased') & 
+            (df['Churn Reason'] !="Don't know") & 
+            (df['County'] == county) &
+            (df['Churn Category'] == cat)
+            )
+    else:
+        if cat == 'All':
+            cond = (
+            (df['Churn Reason'] != 'Moved') & 
+            (df['Churn Reason'] != 'Deceased') & 
+            (df['Churn Reason'] !="Don't know")
+            )
+        else:
+            cond = (
+            (df['Churn Reason'] != 'Moved') & 
+            (df['Churn Reason'] != 'Deceased') & 
+            (df['Churn Reason'] !="Don't know") & 
+            (df['Churn Category'] == cat) &
+            (df['County'] != 'All')
+            )
+            
+    fig,ax=plt.subplots(figsize=figsize)
+    fig.patch.set_alpha(0.0)
+    fig.set_facecolor((0,0,0,0))
+    fig.set_alpha(0.0)
+    ax.set_yticks([])
+    ax.set_xticks([])
+    ax.yaxis.set_major_locator(ticker.NullLocator())
+    sizes = df[cond]['Churn Reason'].value_counts(normalize=True) * 100
+
+    labels = ['Lack of affordable download / upload speed' if label == 'Lack of affordable download/upload speed' else label for label in sizes.index]
+    labels = [f"{label}\n{round(value,2)}%" if value > 2.5 else '' for label,value in zip(labels, sizes.values)]
+
+    labels = [textwrap.fill(label, width=warp_width,
+                        break_long_words=False) for label in labels]
+
+    s = squarify.plot(sizes=sizes,
+                        label=labels,
+                        alpha=.8,
+                        color=sns.color_palette(colors),
+                        ax=ax,
+                        text_kwargs=fontdict,
+                        pad=10,
+                        )
+    fontdict['fontsize']= fontdict['fontsize'] * 1.7
+    
+    if county != 'All':
+        if cat == 'All':
+            s.set_title(f'Churn Reasons distribution for {county}',fontdict=fontdict)
+        else:
+            s.set_title(f'Churn Reasons distribution\n for {county}-{cat}',fontdict=fontdict)
+    else:
+        if cat == 'All':
+            s.set_title(f'Churn Reasons\n distribution total',fontdict=fontdict)
+        else:
+            s.set_title(f'Churn Reasons\n distribution for {cat}',fontdict=fontdict)
+    plt.axis('off')
+
+def wrap_labels(ax, width, break_long_words=False):
+    labels = []
+    for label in ax.get_xticklabels():
+        text = label.get_text()
+        labels.append(textwrap.fill(text, width=width,
+                      break_long_words=break_long_words))
+    ax.set_xticklabels(labels, rotation=0)
+
+def plot_churn_cat_rev_percent(df,cat_colors):
+    churn_category_percent = round(df.groupby('Churn Category')['Total Revenue'].sum() / df['Total Revenue'].sum() * 100,2)
+
+    fig,ax=plt.subplots(figsize=(8,6))
+    g = sns.barplot(data=churn_category_percent,
+    x=churn_category_percent.sort_values().index,
+    y=churn_category_percent.sort_values().values, 
+    ax=ax,
+    palette=cat_colors,
+    )
+    g.set_xticklabels(churn_category_percent.sort_values(ascending=False).index)
+    g.set_xlabel('Categoria de churn',color='w', fontweight='bold')
+    g.patch.set_alpha(0.0)
+    g.spines['right'].set_visible(False)
+    g.spines['top'].set_visible(False)
+    g.spines['left'].set_visible(False)
+    g.set_yticks([])
+    g.set_xticklabels(churn_category_percent.sort_values().index,color='white', fontweight='bold',size=10)
+
+    #labels de los % en las barras
+    for i, v in enumerate(round(churn_category_percent.sort_values(),2).values):
+        ax.text(i-0.2 ,v+0.1 , str(v)+'%', fontweight='bold',color='white')
     fig.patch.set_alpha(0.0)

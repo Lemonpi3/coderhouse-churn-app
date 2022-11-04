@@ -81,10 +81,10 @@ class SetupPage:
                 with open("appconfig.json", "r") as f:
                     data = json.load(f)
                 data['cat_palette']= cat_palette
-                data['dv_palette']=div_palette
+                data['div_palette']= div_palette
 
                 with open("appconfig.json", "w") as jsonfile:
-                    json_conf = json.dump(data, jsonfile)
+                    json_conf = json.dump(data, jsonfile,indent=0)
                     jsonfile.close()
 
         

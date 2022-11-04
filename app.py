@@ -39,7 +39,7 @@ with st.sidebar:
             data = json.load(file)
         data['lang']= lang
         with open("appconfig.json", "w") as jsonfile:
-            json_conf = json.dump(data, jsonfile)
+            json_conf = json.dump(data, jsonfile, indent=0)
             jsonfile.close()
 #home
 if page == side_bar_txt[config["lang"]]["NavigationOptions"][0]:

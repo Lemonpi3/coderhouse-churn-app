@@ -1,4 +1,4 @@
-from distutils.command.config import config
+from ctypes import util
 import matplotlib.pyplot as plt
 import streamlit as st
 import seaborn as sns
@@ -21,7 +21,7 @@ class DataInfo:
             config = json.load(f)
         self.lang = config['lang']
         self.cat_colors = config['cat_palette']
-
+        
         self.page_txt = {
             'EN':{
                 'page_header':'Data Info\n---------',
@@ -205,4 +205,104 @@ class StoryTelling:
             fig.patch.set_alpha(0.0)
             st.pyplot()
         
+        st.markdown('''
+        Las zonas mas pobladas del estado son las mas affectadas principalmente los condados de San Diego y Los Angeles los cuales representan.
+        >
+        Veamos que razones predominan en cada una de estas areas y cuanto dinero nos estan costado.''')
+
+        #por ahi complicarlo luego
+        cols = st.columns(3, gap="small")
+        with cols[0]:
+            counties = [*['All'], *list(self.data[self.data['Customer Status']=='Churned']['County'].unique())]
+            motives = [*['All'] ,*list(self.data[self.data['Customer Status']=='Churned']['Churn Category'].unique())]
+            county = st.selectbox('Condado',counties,0)
+            st.warning('Hay un bug que no deja mostrar county All y una razon a la vez (toma el county como alpine por razones misteriosas)')
+            motivo = st.selectbox('Razon de Churn',motives,0)
+
+            if county != 'All':
+                if motivo != 'All':
+                    total_churned_revenue = self.data[(self.data['Customer Status']=='Churned') & 
+                                (self.data['Churn Category']==motivo) &
+                                (self.data['County']==county)]['Total Revenue'].sum()
+                    churned_revenue_percent = str(round(total_churned_revenue / self.data[self.data['Customer Status']=='Churned']['Total Revenue'].sum() * 100,2)) + '%'
+                    temp_df = pd.DataFrame({'County':[county],'Category':[motivo],'Churned Revenue':[total_churned_revenue],"Percent of\nTotal revenue":[churned_revenue_percent]}).set_index('County',drop=True)
+                    st.dataframe(temp_df,use_container_width=True)
+                else:
+                    temp_df = {'County':[],'Churn Category':[],'Churned Revenue':[],'Percent of\nTotal revenue':[]}
+                    total_churned_revenue = self.data[(self.data['Customer Status']=='Churned') & 
+                                (self.data['County']==county)]['Total Revenue'].sum()
+                    churned_revenue_percent = str(round(total_churned_revenue / self.data[self.data['Customer Status']=='Churned']['Total Revenue'].sum() * 100,2)) + '%'
+                    st.write('Total for {}: {} ({} of total revenue)'.format(county,total_churned_revenue,churned_revenue_percent))
+
+                    for cat in self.data[(self.data['Customer Status']=='Churned')]['Churn Category'].unique():
+                        churned_revenue = self.data[(self.data['Customer Status']=='Churned') & 
+                                (self.data['Churn Category']==cat) &
+                                (self.data['County']==county)]['Total Revenue'].sum()
+                        churned_revenue_percent = str(round(churned_revenue / self.data[self.data['Customer Status']=='Churned']['Total Revenue'].sum() * 100,2)) + '%'
+                        temp_df['County'].append(county)
+                        temp_df['Churn Category'].append(cat)
+                        temp_df['Churned Revenue'].append(churned_revenue)
+                        temp_df['Percent of\nTotal revenue'].append(churned_revenue_percent)
+
+                    st.dataframe(pd.DataFrame(temp_df).set_index('County',drop=True).sort_values('Percent of\nTotal revenue',ascending=False),use_container_width=True)
+            else:
+                if motivo != 'All':
+                    temp_df = {'County':[],'Category':[],'Churned Revenue':[],"Percent of\nTotal revenue":[]}
+                    total_cat_revenue = self.data[(self.data['Customer Status']=='Churned') & 
+                                    (self.data['Churn Category']==motivo)]['Total Revenue'].sum()
+                    total_cat_revenue_percent = str(round(total_cat_revenue / self.data[self.data['Customer Status']=='Churned']['Total Revenue'].sum() * 100,2)) + '%'
+                    st.write('Total for {}: {} ({} of total revenue)'.format(motivo,total_cat_revenue,total_cat_revenue_percent))
+                    for county in self.data['County'].unique():
+                        total_churned_revenue = self.data[(self.data['Customer Status']=='Churned') & 
+                                    (self.data['Churn Category']==motivo) &
+                                    (self.data['County']==county)]['Total Revenue'].sum()
+                        churned_revenue_percent = str(round(total_churned_revenue / self.data[self.data['Customer Status']=='Churned']['Total Revenue'].sum() * 100,2)) + '%'
+                        temp_df['County'].append(county)
+                        temp_df['Category'].append(motivo)
+                        temp_df['Churned Revenue'].append(total_churned_revenue)
+                        temp_df['Percent of\nTotal revenue'].append(churned_revenue_percent)
+
+                    temp_df = pd.DataFrame(temp_df).set_index('County',drop=True).sort_values('Percent of\nTotal revenue',ascending=False)
+                    st.dataframe(temp_df,use_container_width=True)
+                else:
+                    total_cat_revenue = self.data[(self.data['Customer Status']=='Churned')].groupby(['County','Churn Category'])['Total Revenue'].sum()
+                    total_cat_revenue = pd.DataFrame(total_cat_revenue)
+                    total_cat_revenue['Percent of\nTotal revenue'] = [str(round(value / self.data[self.data['Customer Status']=='Churned']['Total Revenue'].sum() * 100,2)) + '%' for value in total_cat_revenue['Total Revenue']]
+                    st.dataframe(total_cat_revenue.sort_values('Percent of\nTotal revenue',ascending=False),use_container_width=True)
+        with cols[1]:
+            if county != 'All':
+                if motivo != 'All':
+                    utils.plot_box_map(self.data,self.cat_colors,county=county,cat=motivo,fontdict={ 'fontsize': 7,'color': 'white','fontweight': 'bold','horizontalalignment': 'center' })
+                    st.pyplot()
+                else:
+                    utils.plot_box_map(self.data,self.cat_colors,warp_width=8,county=county,fontdict={ 'fontsize': 7,'color': 'white','fontweight': 'bold','horizontalalignment': 'center' },figsize=(8,8))
+                    st.pyplot()
+                    st.info('Puedes hacer zoom clickeando el boton que sale al pasar el mouse sobre el grafico')
+            else:
+                if motivo == 'All':
+                    utils.plot_box_map(self.data,self.cat_colors,warp_width=8,fontdict={ 'fontsize': 7,'color': 'white','fontweight': 'bold','horizontalalignment': 'center' },figsize=(8,8))
+                    st.pyplot()
+                    st.info('Puedes hacer zoom clickeando el boton que sale al pasar el mouse sobre el grafico')
+                else:
+                    utils.plot_box_map(self.data,self.cat_colors,cat=motivo,fontdict={ 'fontsize': 7,'color': 'white','fontweight': 'bold','horizontalalignment': 'center' })
+                    st.pyplot()
+        with cols[2]:
+            if county != 'All':
+                cond = ((self.data['County'] == county) &
+                        (self.data['Customer Status']=='Churned'))
+                churn_category_percent = round(self.data[cond].groupby('Churn Category')['Total Revenue'].sum() / self.data[(self.data['Customer Status']=='Churned')]['Total Revenue'].sum() * 100,2)
+                churn_category_money = self.data[cond].groupby('Churn Category')['Total Revenue'].sum()
+                st.markdown(f'Porcentaje del revenue de los churned por \ncategoria de churn para {county}')
+                utils.plot_churn_cat_rev_percent(self.data[cond],self.cat_colors)
+                st.pyplot()
+                st.dataframe(pd.DataFrame({'Category':list(churn_category_percent.index),'Revenue':churn_category_money.values,'% of Total Churned Revenue for county':[str(value) +'%' for value in churn_category_percent.values]}))
+            else:
+                cond = ((self.data['Customer Status']=='Churned'))
+                churn_category_percent = round(self.data[cond].groupby('Churn Category')['Total Revenue'].sum() / self.data[(self.data['Customer Status']=='Churned')]['Total Revenue'].sum() * 100,2)
+                churn_category_money = self.data[cond].groupby('Churn Category')['Total Revenue'].sum()
+                st.markdown(f'Porcentaje del revenue de los churned por \ncategoria de churn para {county}')
+                utils.plot_churn_cat_rev_percent(self.data[cond],self.cat_colors)
+                st.pyplot()
+                st.dataframe(pd.DataFrame({'Category':list(churn_category_percent.index),'Revenue':churn_category_money.values,'% of Total Churned Revenue for county':[str(value) +'%' for value in churn_category_percent.values]}))
         
+        st.markdown('La competencia es la razon principal de porque tenemos tantos churned, habria que aumentar nuestra competividad ofreciendo mejores ofertas, dispositivos')
