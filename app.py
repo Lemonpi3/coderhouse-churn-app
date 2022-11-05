@@ -1,13 +1,7 @@
-import imp
-import os
-import numpy as np
-import pandas as pd
-import seaborn as sns
 import streamlit as st
-import matplotlib.pyplot as plt
-from scripts import utils
 from scripts.setuppage import SetupPage
-from scripts.storytelling import StoryTelling,DataInfo
+from scripts.storytelling import StoryTelling
+from scripts.infodatapage import DataInfo
 from scripts.homepage import HomePage
 import json
 

@@ -1,4 +1,3 @@
-from ctypes import util
 import matplotlib.pyplot as plt
 import streamlit as st
 import seaborn as sns
@@ -9,96 +8,6 @@ import pandas as pd
 import textwrap
 import warnings
 from mpl_toolkits.basemap import Basemap
-
-class DataInfo:
-    def __init__(self) -> None:
-        warnings.filterwarnings("ignore", category=FutureWarning) #ignorar unos carteles de pandas.
-        pd.set_option('display.max_columns', None)
-
-        self.data = pd.read_csv("./assets/data/dataset.csv")
-
-        with open("appconfig.json", "r") as f:
-            config = json.load(f)
-        self.lang = config['lang']
-        self.cat_colors = config['cat_palette']
-        
-        self.page_txt = {
-            'EN':{
-                'page_header':'Data Info\n---------',
-                'dataset_source':'WIP',
-                'types_of_client':'WIP',
-                'client_frequency':'WIP',
-                'unique_title':'WIP',
-                'unique_txt':'WIP',
-                'null_amount':'WIP',
-                'column_info':'WIP',
-            },
-            'ES':{
-                'page_header':'Información de la Data\n---------',
-                'dataset_source':'''
-                    La data proviene de una compania de telecomunicaciones en California en el
-                    Q2 2022.
-
-                    El dataset fue sacado de [kaggle]("https://www.kaggle.com/datasets/shilongzhuang/telecom-customer-churn-by-maven-analytics").
-                    >
-                    La columna County fue creada apartir de la data proveniente de [geographic.org]("https://geographic.org/streetview/usa/ca/") con el fin de segmentar los churned en regiones mas grandes.
-                    ''',
-                'types_of_client':'''
-                    #### Hay 3 tipos de clientes en el dataset:
-                    * **Stayed**:  Son los usuarios que se quedan en el servicio.
-                    * **Joined**:  Son los usuarios nuevos al servicio que se sumaron este cuatrimestre.
-                    * **Churned**: Son los usuarios que dejaron el servicio en este cuatrimestre.''',
-                'client_frequency':"### Frecuencia de cada tipo usuario en el dataset",
-                'unique_title':"### Cantidad de usuarios unicos y forma del dataset",
-                'unique_txt':'* **Clientes Unicos: {}**\n* **Shape: {}**',
-                'null_amount':"### Cantidad de nulos en el dataset",
-                'column_info':"""
-                    ### Info de cada columna
-                    * **Customer Status:** Si el cliente sigue en el servicio, se unió o lo dejó (churned)
-                    * **Churn Category:** La categoria del porque lo dejo (por ejemplo: Dissatisfaction, Competitor, etc). Es la mas importante de las 2 columnas.
-                    * **Churn Reason:** La razon especifica del cliente de por que dejo el servicio.
-                    * **Gender, Age, Married, Number of Dependents:** Datos personales de como es la persona , si esta casada o no y con cuanta gente vive.
-                    * **City, Zip Code, Latitude, Longitude, County:** En que parte del estado vive el cliente.
-                    * **Number of Referrals, Tenure in Months:** A cuanta gente le recomendo el servicio y cuantos meses lleva con el servicio (tenure)
-                    * **Offer, Phone Service, Multiple Lines, Avg Monthly Long Distance Charges:** El plan que el cliente esta usando , si opto por usar el servicio telefonico en su casa, si tiene multiples lineas telefónicas y el gasto mensual promedio en llamadas a larga distancia (si el cliente no esta subscripto al servicio telefonico el valor es 0)
-                    * **Internet Service, Internet Type, Avg Monthly GB Download:** Datos relacionados al servicio del internet, si no contrató el servicio de internet el tipo de internet  esta como nulo y los GBs promedio tendran un valor igual a 0.
-                    * **Online Security, Online Backup, Device Protection Plan, Premium Tech Support, Streaming TV, Streaming Movies, Streaming Music, Unlimited Data:** Indican si optaron o no por cada uno de esos servicios.
-                    * **Contract, Paperless Billing, Payment Method, Monthly Charge:** La forma y metodo de pago que eligio el cliente y cuanto se le cobra mensualmente.
-                    * **Total Charges, Total Refunds, Total Extra Data Charges, Total Long Distance Charges, Total Revenue:** Gastos y reembolsos totales. Total revenue indica cuanto gano la empresa con este cliente.
-                    """,
-            },
-        }
-        self.display_page()
-        
-    def display_page(self):
-        st.header(self.page_txt[self.lang]['page_header'])
-        st.write(self.page_txt[self.lang]['dataset_source'])
-        st.write(self.page_txt[self.lang]['types_of_client'])
-
-        st.write(self.page_txt[self.lang]['client_frequency'])
-        temp_df = pd.concat([self.data['Customer Status'].value_counts().to_frame('Cantidad absoluta'),
-                        (self.data['Customer Status'].value_counts(normalize=True)*100).to_frame('Cantidad porcentual')], 
-                        axis=1).style.format({'Cantidad porcentual': '{:.2f}%'})
-        cols = st.columns(3, gap="small")
-        with cols[0]:                
-            fig, ax = plt.subplots(figsize=(3,3))
-            utils.wheel_chart(self.data['Customer Status'], ax, [self.cat_colors[0],self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': 7 })
-            st.pyplot(fig.patch.set_alpha(0.0))
-        st.dataframe(temp_df)
-
-        st.write(self.page_txt[self.lang]['unique_title'])
-        unicos = self.data['Customer ID'].nunique()
-        st.write(self.page_txt[self.lang]['unique_txt'].format(unicos,self.data.shape))
-        
-
-        st.write(self.page_txt[self.lang]['null_amount'])
-        temp_df = pd.concat([self.data.isna().sum().to_frame('cantidad de nulos absoluta'),
-                            (self.data.isna().sum() / len(self.data) * 100).to_frame('cantidad de nulos porcentual'),
-                            self.data.dtypes.to_frame('tipo de variable')], axis=1).style.format({'cantidad de nulos porcentual': '{:.2f}%'})
-        st.dataframe(temp_df)
-
-        st.write(self.page_txt[self.lang]['column_info'])
-        st.dataframe(self.data.head())
 
 class StoryTelling:
     def __init__(self) -> None:
@@ -305,4 +214,48 @@ class StoryTelling:
                 st.pyplot()
                 st.dataframe(pd.DataFrame({'Category':list(churn_category_percent.index),'Revenue':churn_category_money.values,'% of Total Churned Revenue for county':[str(value) +'%' for value in churn_category_percent.values]}))
         
-        st.markdown('La competencia es la razon principal de porque tenemos tantos churned, habria que aumentar nuestra competividad ofreciendo mejores ofertas, dispositivos')
+        st.markdown('''
+            * **La competencia es la razon principal** de los churned en los condados representando en general 30-70% de los churned.Los unicos condados donde no es la principal son Fresno, Orange y Ventura donde estan empatados o superados por probelmas en la actitud del soporte.
+            >
+            En la mayoria de los condados ,entre las razones de la competencia, predomina que ofrece mejores dispositivos. La excepcion a esto es San Diego donde domina la mejor oferta por parte de los competidores.
+            >
+            * **La razon secundaria es la actitud del soporte y del proveedor** de cada condado representando en general 15-35% de los churned.Se puede observar en Fresno, Orange, Kern, Ventura y San Bernandino como los principales con este problema y San Diego, San Francisco y Sacramento donde este problema es minimo
+            >
+            * **Y las razones terciarias** son disatisfaccion con los productos,servicios y los precios tanto del servicio como de los cargos a larga distancia.
+            >
+            Este problema representa aproximadamente 15-30% de los churned en cada condado. En los unicos en los que no se presenta a gran tamaño es en San Diego y Kern y
+            en los que peor impactan estas razones son Los Angeles, Contra Costa y San Bernandino.
+            ''')
+        
+        utils.plot_stacked_bar_distribution(colors=self.cat_colors,figsize=(30,8))
+        st.pyplot()
+        temp_df = pd.read_csv('./assets/data/dist_top_15_df.csv',index_col='County')
+        temp_df.index.name ='County'
+        st.dataframe(temp_df,use_container_width=True,)
+        
+        st.markdown('''
+            ### ¿Que deberiamos hacer para combatir estos problemas?
+            * Para ganarle a la competencia y retener los usuarios deberiamos ofrecer mejores dispositvos y ofertas.
+            * Habria que ver que esta pasando con el soporte en Fresno, Orange, Kern, Ventura , San Bernandino y Los Angeles ya que estan dando una mala calidad de servicio.
+            * Por la disatisfacción de producto habria que ver la estabilidad de la red, la calidad de los productos que estamos brindando y revisar el costo de las ofertas que tenemos para que esten acorde
+                a lo que brindamos. Los condados donde deberiamos concentrarnos incialmente por esto son Los Angeles, Contra Costa y San Bernandino
+            ### Hablando de las ofertas que ofrecemos, ¿Hay alguna que causa problemas?
+            Veamos la distribución de los Churned en cada tipo de oferta.''')
+
+        fig , ax = plt.subplots(2,3,figsize=(12,8))
+        ax = ax.flatten()
+        for i,offer in enumerate(self.data['Offer'].unique()):
+            temp_df = self.data[self.data['Offer']==offer][['Offer','Customer Status']]
+            temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+            utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[i],title=offer,colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': 10 })
+        fig.patch.set_alpha(0.0)
+        st.pyplot()
+
+        st.markdown('''
+                Podemos observar que la oferta mas problematica es la **Oferta E** teniendo mas del 50% de usuarios Churned, habria que mejorarla.
+                Luego las otras ofertas que impactan negativamente son la **Oferta D y C** donde aproximadamente 1 de cada 4 usuarios es Churned.
+                Tambien se puede ver que el 27% de los usuarios que no poseen oferta dejan el servicio, habria que meterlos en una oferta para disminuir las chances de que dejen.
+            
+                ###  
+            ''')
+

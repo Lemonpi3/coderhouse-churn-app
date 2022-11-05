@@ -6,6 +6,7 @@ import numpy as np
 from mpl_toolkits.basemap import Basemap
 import squarify
 import textwrap
+import pandas as pd
 
 def palplot(pal, size=1, ax=None, fig=None):
     """Plot the values in a color palette as a horizontal array.
@@ -40,7 +41,16 @@ def wheel_chart(X,ax,colors,width=0.3,radius=1,fontdict ={'color': 'darkred', 'w
     labels = [X.unique()[i] + f'\n{g}%'for i,g in enumerate(size_of_groups)]
     ax.pie(size_of_groups,labels=labels, radius=radius,colors = cmap[:len(X.unique())],
             wedgeprops=dict(width=width),textprops=fontdict)
-        
+
+def cat_comp_wheel_chart(X,ax,colors,title='',width=0.3,radius=1,fontdict ={'color': 'darkred', 'weight': 'bold', 'size': 16,}):
+    size_of_groups=round(X * 100,2)
+    cmap = sns.color_palette(colors)
+    text_labels = X.index
+    labels = [text_labels[i] + f'\n{g}%'for i,g in enumerate(size_of_groups)]
+    ax.pie(size_of_groups,labels=labels, radius=radius,colors = cmap[:len(text_labels)],
+            wedgeprops=dict(width=width),textprops=fontdict)
+    ax.set_title(title,fontdict)
+
 def plot_scatter_map(df, alpha=0.7, title='', ax=None ,dot_color='blue',land_color='grey',water_col='lightblue', marcar_ciudades=True, fontdict ={'color': 'white', 'weight': 'bold', 'size': 7,}):
   '''
   Dibuja un scatter con el mapa de california
@@ -228,4 +238,66 @@ def plot_churn_cat_rev_percent(df,cat_colors):
     #labels de los % en las barras
     for i, v in enumerate(round(churn_category_percent.sort_values(),2).values):
         ax.text(i-0.2 ,v+0.1 , str(v)+'%', fontweight='bold',color='white')
+    fig.patch.set_alpha(0.0)
+
+def plot_stacked_bar_distribution(colors=["#6cd4c5","#a3ea63","#cf75a4","#2a6d76","#25b7f1","#849ab7","#e27c7c"],fontdict={
+    'fontweight': 'bold', 'color':'white','fontsize':15},figsize=(32,8)):
+
+    distribution = pd.read_csv('./assets/data/distribution_top_15.csv')
+    
+    sorter = ['los_angeles', 'san_diego', 'orange', 'riverside',
+       'san_bernardino', 'sacramento', 'santa_clara', 'alameda', 'fresno',
+       'contra_costa', 'kern', 'humboldt', 'tulare',
+       'san_mateo', 'sonoma']
+
+    #cambio el tipo de la columna a categoria para poder sortearla
+    distribution.County = distribution.County.astype("category")
+    distribution.County.cat.set_categories(sorter, inplace=True)
+    distribution.sort_values(['County','Churn Category'], inplace = True,ascending=(True,True))
+
+    #devuelvo al tipo que era antes para seguir usandola
+    distribution.County = distribution.County.astype("object")
+    distribution['%'] = distribution['%'] * 100
+
+    fig,ax=plt.subplots(1,1,figsize=figsize)
+
+    g = sns.histplot(data= distribution,
+                y='County', hue='Churn Category',weights='%',
+                palette = sns.color_palette(colors),
+                legend=False,
+                multiple = 'stack',
+                )
+    g.patch.set_alpha(0.0)
+
+    #pongo los % en las cajas con mas de 1.2%
+    for c in g.containers:
+        labels = [str(round(v.get_width(),2))+'%' if v.get_width() > 1.2 else '' for v in c]
+        g.bar_label(c, labels=labels, label_type='center')
+
+
+    g.set_title('Distribución de Churn Category en Top 15 condados',fontdict=fontdict)
+
+    # g.set_ylabel('Condado',color=fontdict['color'])
+    g.set_ylabel('')
+    #cambio los ticks numericos por las clases para tener una referencia de donde esta 
+    #cada razon.
+    g.tick_params(colors='white',size=0.1)
+    g.set_xlabel('')
+    g.set_xticks(range(5,105,20),labels=distribution['Churn Category'].unique()[::-1],rotation=0)
+
+    for i,tick_label in enumerate(g.axes.get_yticklabels()):
+        tick_label.set_size(20)
+
+    #les pongo el color para que ayude a referenciar con el color de cada caja
+    for i,tick_label in enumerate(g.axes.get_xticklabels()):
+        tick_label.set_color(sns.color_palette(colors)[-1::-1][i])
+        tick_label.set_size(20)
+        
+    fig.patch.set_alpha(0.0)
+    #quito unas partes blancas que habian quedado y los ejes
+    g.grid(visible=False)
+    sns.despine(left=True,bottom=True)
+
+    #acomodo la leyenda a la derecha por fuera del grafico
+    # sns.move_legend(ax,bbox_to_anchor=(1, 0.5),loc=10)
     fig.patch.set_alpha(0.0)
