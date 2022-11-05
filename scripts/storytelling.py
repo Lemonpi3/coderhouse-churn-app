@@ -306,11 +306,72 @@ class StoryTelling:
                     st.markdown('#### Proporción de churned vs stayed por servicio de internet')
                     st.pyplot()
         elif filtro == 'Pagos':
-            # ['Contract', 'Paperless Billing', 'Payment Method']     
+            cols = ['Contract', 'Paperless Billing', 'Payment Method']     
             fig , ax = plt.subplots(1,3,figsize=(18,6))
-            ax = ax.flatten()
+            utils.multi_barplot(self.data,cols,ax,self.cat_colors)
+            fig.patch.set_alpha(0.0)
             st.pyplot()
 
+            cols = ['Tenure in Months', 'Avg Monthly Long Distance Charges','Monthly Charge', 'Total Revenue']
             fig , ax = plt.subplots(1,4,figsize=(12,3))
             ax = ax.flatten()
+            utils.plot_num_hists(self.data,cols,ax,colors=[self.cat_colors[1],self.cat_colors[-1]])
+            fig.patch.set_alpha(0.0)
             st.pyplot()
+        elif filtro == 'Usuario':
+            # 'Gender', 'Married', 'Age'
+            cols = st.columns(2,gap='small')
+            with cols[0]:
+                fig , ax = plt.subplots(figsize=(6,6))
+                utils.plot_age_pop(self.data,ax,colors=[self.cat_colors[-1],self.cat_colors[1]])
+                fig.patch.set_alpha(0.0)
+                st.pyplot()
+
+            with cols[1]:
+                fig , ax = plt.subplots(2,2,figsize=(8,8))
+                ax = ax.flatten()
+                temp_df = self.data[self.data['Gender']=='Female'][['Customer Status','Gender']]
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[0],title=f'Distribución churned Female',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': 10 })
+                
+                temp_df = self.data[self.data['Gender']=='Male'][['Customer Status','Gender']]
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[1],title=f'Distribución churned Male',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': 10 })
+                
+                temp_df = self.data[self.data['Married']=='Yes'][['Customer Status','Gender']]
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[2],title=f'Distribución de casados',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': 10 })
+                
+                temp_df = self.data[self.data['Married']=='No'][['Customer Status','Gender']]
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[3],title=f'Distribución de solteros',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': 10 })
+                fig.patch.set_alpha(0.0)
+                st.pyplot()
+        
+        st.markdown('''
+        Las grupos mas relevantes de usuarios dejan el servicio son:
+        * Usuarios que contratan servicio a internet (mayoritariamente los que contratan fibra optica)
+        * Los que no contratan soporte premium
+        * Los que pagan de mes a mes en vez de pagar en intervalos mas grandes.
+        * Los que pagan por medio del banco
+        * La mayoria de los churned pagaban una tarifa mensual entre 70-110 dolares mientras que la mayoria los que se pegaban pagaban alrededor de 30 dolares.
+        * Las personas mayores tienden a dejar mas el servicio que las mas jóvenes.
+        * Lo mismo ocurre con las personas solteras que tienden a dejar mas que las casadas.
+        * Mientras mas tiempo lleven en el servicio menos chances tienen de dejarlo.
+
+        Y otras cosas a tener en cuenta:
+        * El resto de los servicios premium de internet no necesariamente influyen ya que aproximadamente tienen la misma proporción de churned los que lo contrataron y los que no.
+        * No hay diferencia entre los generos.
+        ''')
+        st.markdown('''
+        ### Visto todo esto, ¿qué mas podemos hacer para solucionar este problema?
+        
+        Ademas de las cosas que vimos recien si queremos mejorar podriamos hacer 2 cosas mas:
+        1) Podemos crear 2 modelos de machine learning que nos ayudarian a minimizar lo mas posible esta perdida de clientes:
+        * Un modelo de clasificación simple que nos entrega la probabilidad de que un cliente deje el servicio.
+        * Y otro de clasificación multivariada que , si el primero predice que deja, prediga la razon mas probable de por la que lo va a dejar.
+        Con la información que den estos modelos se podra redirigir al departamento correspondiente dentro de la empresa con el fin de evitar que ese cliente deje el servicio.
+        
+        2) Aumentar y mejorar el marketing de la empresa con el fin de atraer a mas usuarios. 
+        Si subimos los usuarios que entran al mismo tiempo de que disminuimos los que se van podremos mejorar las ganancias de la empresa significativamente, ya si hubieramos evitado el 50% de los churned hubieramos ganado \$1842229.91 dolares mas.
+        ''')

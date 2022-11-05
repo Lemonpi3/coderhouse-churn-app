@@ -356,3 +356,93 @@ def plot_stacked_bars_dist_churned(df,cols,colors=['red','green'],figsize = (6,1
         labels = [str(round(v.get_width(),2))+'%' if v.get_width() < 99 else str(round(a.iloc[i]['Not Churned'],2))+'%' for i,v in enumerate(c)]
         ax.bar_label(c, labels=labels, label_type='center')
     fig.patch.set_alpha(0.0)
+
+def plot_age_pop(df,ax,colors=[],figsize=(8,8),fontdict ={'color': 'white', 'weight': 'bold', 'size': 10,}):
+    df['Customer Status'] = df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+    
+    AgeClass = ['< 20','20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80+']
+
+    def to_age_bin(age):
+        bins=range(20,90,5)
+        for bine in bins:
+            if age < bine:
+                return AgeClass[bins.index(bine)]
+        return AgeClass[-1]
+    df['Customer Status'] = df['Customer Status'].apply(lambda x:'Not Churned' if x != 'Churned' else x)
+    a=pd.DataFrame()
+    a['Age'] = df['Age']
+    a['Age'] = a['Age'].apply(to_age_bin)
+    a['Customer Status'] = df['Customer Status']
+    x1 = a[a['Customer Status']=='Churned']['Age'].value_counts(normalize=True) *-100
+    x2 = a[a['Customer Status']=='Not Churned']['Age'].value_counts(normalize=True) * 100
+    bar_plot = sns.barplot(x=x1.values,y=x1.index,data=a, order=AgeClass[::-1], color=colors[0], lw=0,ax=ax)
+    bar_plot = sns.barplot(x=x2.values,y=x2.index,data=a, order=AgeClass[::-1], color=colors[1], lw=0,ax=ax)
+
+    plt.xticks(ticks=[-10, -5, 0, 5, 10],
+    labels=['10%', '5%', '0', '5%', '10%'])
+    ax.set_xlabel("Churned     |     No Churned",fontdict=fontdict)
+    ax.set_ylabel("Grupo de edad",fontdict=fontdict)
+
+    ax.set_title("Distribución por edad",fontdict=fontdict)
+
+    for c in ax.containers:
+            labels = [str(round(np.abs(v.get_width()),2))+'%' if np.abs(v.get_width()) > 1 else '' for i,v in enumerate(c)]
+            ax.bar_label(c, labels=labels, label_type='center',color='white')
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.tick_params(colors='white',size=0.1)
+    ax.patch.set_alpha(0.0)
+    ax.spines['left'].set_color('white')
+    ax.spines['bottom'].set_color('white')
+
+def multi_barplot(df,cols,ax,palette=sns.color_palette(['red','green','blue']),fontdict ={'color': 'white', 'weight': 'bold', 'size': 10,}):
+    df['Customer Status'] = df['Customer Status'].apply(lambda x:'Not Churned' if x != 'Churned' else x)
+
+    for i, cat_col in enumerate(cols):
+        y,x=cat_col,'Customer Status'
+
+        (df
+        .groupby(x)[y]
+        .value_counts(normalize=True)
+        .mul(100)
+        .rename('percent')
+        .reset_index()
+        .pipe((sns.barplot,'data'), x=x,y='percent',hue=y, 
+                ax=ax[i],
+                palette=palette))
+        ax[i].set_ylabel('% de población por status',fontdict=fontdict)
+        ax[i].set_xlabel('')
+        ax[i].set_title(cat_col,fontdict=fontdict)
+        ax[i].spines['right'].set_visible(False)
+        ax[i].spines['top'].set_visible(False)
+        ax[i].tick_params(colors='white',size=0.1)
+        ax[i].patch.set_alpha(0.0)
+        ax[i].spines['left'].set_color('white')
+        ax[i].spines['bottom'].set_color('white')
+
+def plot_num_hists(df,cols,ax,colors=[],fontdict={'color': 'white', 'weight': 'bold', 'size': 7,}):
+    ax.flatten()
+    df['Customer Status'] = df['Customer Status'].apply(lambda x:'Not Churned' if x != 'Churned' else x)
+
+    for i, num_col in enumerate(cols):
+        cond_stay =df['Customer Status']=='Not Churned'
+        cond_churn =df['Customer Status']=='Churned'
+        g= sns.histplot(data=df[cond_stay],x=num_col,stat='percent',ax=ax[i],kde=True,kde_kws={'cut':0},color=colors[0])
+        
+        g.set_ylim(0,45)
+        g.set_ylabel('')
+        g= sns.histplot(df[cond_churn],x=num_col,stat='percent',ax=ax[i],kde=True,kde_kws={'cut':0},color=colors[1])
+        g.set_ylim(0,45)
+        g.set_xlabel('')
+        g.set_ylabel('% de la población por Customer Status',fontdict=fontdict)
+
+        title=textwrap.fill(num_col, width=40,
+                            break_long_words=False)
+        g.set_title(title,fontdict=fontdict)
+        ax[i].spines['right'].set_visible(False)
+        ax[i].spines['top'].set_visible(False)
+        ax[i].tick_params(colors='white',size=0.1)
+        ax[i].patch.set_alpha(0.0)
+        ax[i].spines['left'].set_color('white')
+        ax[i].spines['bottom'].set_color('white')
+        ax[i].legend(labels=['Stayed', 'Churned'],fontsize=5) 

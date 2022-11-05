@@ -16,17 +16,17 @@ side_bar_txt = {
     "ES":{
         "LanguageSelect":"Lenguaje (updates after changing page)",
         'NavigationLable':"Navegación",
-        "NavigationOptions":["Inicio", "Info de la Data", "Stortylling", "3","Configuración"]},
+        "NavigationOptions":["Inicio", "Info de la Data", "Stortylling","Configuración"]},
     "EN":{
         "LanguageSelect":"Language (se updatea al cambiar de página)",
         'NavigationLable':"Navigation",
-        "NavigationOptions":["Home", "Data info", "Stortylling", "3","Config"]
+        "NavigationOptions":["Home", "Data info", "Stortylling","Config"]
     }
 }
 with st.sidebar:
     page = st.radio(side_bar_txt[config["lang"]]["NavigationLable"],side_bar_txt[config["lang"]]["NavigationOptions"])
 
-    lang = st.selectbox(side_bar_txt[config["lang"]]["LanguageSelect"],["ES","EN"],["ES","EN"].index(config["lang"]))
+    lang = st.selectbox(side_bar_txt[config["lang"]]["LanguageSelect"],["ES","EN"],0)
 
     if lang:
         with open("appconfig.json", "r") as file:
