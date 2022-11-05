@@ -8,7 +8,7 @@ import json
 with open("appconfig.json", "r") as f:
     config = json.load(f)
 
-st.set_page_config(layout="wide",page_title='Test',page_icon='🤖')
+st.set_page_config(layout="wide",page_title='Coderhouse Churn Proyect',page_icon='📊')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
@@ -46,4 +46,7 @@ if page == side_bar_txt[config["lang"]]["NavigationOptions"][1]:
     DataInfo()
 #storytelling
 if page == side_bar_txt[config["lang"]]["NavigationOptions"][2]:
-    StoryTelling()
+    if lang == 'EN':
+        st.warning('The English version of this section is under development')
+    else:
+        StoryTelling()

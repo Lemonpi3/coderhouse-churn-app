@@ -290,7 +290,19 @@ def plot_stacked_bar_distribution(colors=["#6cd4c5","#a3ea63","#cf75a4","#2a6d76
 
     #les pongo el color para que ayude a referenciar con el color de cada caja
     for i,tick_label in enumerate(g.axes.get_xticklabels()):
-        tick_label.set_color(sns.color_palette(colors)[-1::-1][i])
+        #correcion bug colores
+        if i == 0:
+            color = colors[4]
+        elif i == 1:
+            color = colors[3]
+        elif i == 3:
+            color = colors[1]
+        elif i == 4:
+            color = colors[0]
+        else:
+            color = colors[2]
+
+        tick_label.set_color(color)
         tick_label.set_size(20)
         
     fig.patch.set_alpha(0.0)
