@@ -313,3 +313,46 @@ def plot_stacked_bar_distribution(colors=["#6cd4c5","#a3ea63","#cf75a4","#2a6d76
     #acomodo la leyenda a la derecha por fuera del grafico
     # sns.move_legend(ax,bbox_to_anchor=(1, 0.5),loc=10)
     fig.patch.set_alpha(0.0)
+
+
+def plot_stacked_bars_dist_churned(df,cols,colors=['red','green'],figsize = (6,10),fontdict ={'color': 'white', 'weight': 'bold', 'size': 10,},):
+    import matplotlib.patches as mpatches
+    temp_df=df
+    temp_df['Customer Status'] = df['Customer Status'].str.replace('Joined','Not churned').replace('Stayed','Not churned')
+    value1 = []
+    value2 = []
+    group = []
+    total = []
+    for col in cols:
+        cat = temp_df[col].unique()
+        for cate in cat:
+            group.append(col +' ' +cate)
+            value1.append(temp_df[(temp_df['Customer Status']=='Churned') & (temp_df[col]==cate)][col].value_counts().item() / len(temp_df[temp_df[col]==cate]) * 100)
+            value2.append(temp_df[(temp_df['Customer Status']=='Not churned') & (temp_df[col]==cate)][col].value_counts().item()/ len(temp_df[temp_df[col]==cate]) * 100)
+            total.append(100)
+
+    a = pd.DataFrame({'group':group, 'Churned':value1 , 'Not Churned':value2,'total':total })
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.tick_params(colors='white',size=0.1)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+
+    bar1 = sns.barplot(x='total',  y="group", data=a, color=colors[1], ax=ax)
+    bar2 = sns.barplot(x='Churned', y="group", data=a, color=colors[0], ax=ax)
+    ax.set_ylabel('Grupo',fontdict=fontdict)
+    top_bar = mpatches.Patch(color=colors[0], label='Churned')
+    bottom_bar = mpatches.Patch(color=colors[1], label='Not Churned')
+    plt.legend(handles=[top_bar, bottom_bar],bbox_to_anchor=(0.1, 0.12),
+            bbox_transform=plt.gcf().transFigure)
+    ax.set_xlabel('Cantidad Churned vs Stayed por servicio de internet',fontdict=fontdict)
+    ax.set_xlim(0,100)
+    ax.patch.set_alpha(0.0)
+    fig.patch.set_alpha(0.0)
+    fig.set_facecolor((0,0,0,0))
+    fig.set_alpha(0.0)
+    for c in ax.containers:
+        labels = [str(round(v.get_width(),2))+'%' if v.get_width() < 99 else str(round(a.iloc[i]['Not Churned'],2))+'%' for i,v in enumerate(c)]
+        ax.bar_label(c, labels=labels, label_type='center')
+    fig.patch.set_alpha(0.0)

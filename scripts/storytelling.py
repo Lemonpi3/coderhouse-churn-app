@@ -256,49 +256,61 @@ class StoryTelling:
                 Luego las otras ofertas que impactan negativamente son la **Oferta D y C** donde aproximadamente 1 de cada 4 usuarios es Churned.
                 Tambien se puede ver que el 27% de los usuarios que no poseen oferta dejan el servicio, habria que meterlos en una oferta para disminuir las chances de que dejen.
             
-                ###  Veamos como el tipo de oferta Afecta a diferentes grupos de usuarios
+                ###  Veamos la distribución de los Churned en diferentes grupos de usuarios y servicios
             ''')
         cols = st.columns(2,gap='small')
         with cols[0]:
-            oferta = st.selectbox('Oferta',['All', 'None', 'Offer A', 'Offer B', 'Offer C', 'Offer D', 'Offer E'])
             filtro = st.selectbox('Tipo de categoria',['Servicios','Pagos','Usuario'])
         
-        cols = st.columns(2,gap='small')
-        with cols[0]:
-            if oferta == 'All':
-                if filtro == 'Servicios':
-                    fig , ax = plt.subplots(1,2,figsize=(8,8))
-                    ax = ax.flatten()
-                    font_s = 8
-                    #Phone Y
-                    cond= self.data['Phone Service'] == 'Yes'
-                    temp_df = self.data[cond][['Customer Status','Phone Service']]
-                    temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
-                    utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[0],title=f'Users with \nPhone Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
-                    #Phone N
-                    cond= self.data['Phone Service'] == 'No'
-                    temp_df = self.data[cond][['Customer Status','Phone Service']]
-                    temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
-                    utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[1],title=f'Users without \nPhone Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
-                    fig.patch.set_alpha(0.0)
-                    st.pyplot()
+        if filtro == 'Servicios':
+            cols = st.columns(2,gap='small')
+            with cols[0]:
+                fig , ax = plt.subplots(1,2,figsize=(8,8))
+                ax = ax.flatten()
+                font_s = 8
+                #Phone Y
+                cond= self.data['Phone Service'] == 'Yes'
+                temp_df = self.data[cond][['Customer Status','Phone Service']]
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[0],title=f'Users with \nPhone Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
+                #Phone N
+                cond= self.data['Phone Service'] == 'No'
+                temp_df = self.data[cond][['Customer Status','Phone Service']]
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[1],title=f'Users without \nPhone Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
+                fig.patch.set_alpha(0.0)
+                st.pyplot()
 
-                    fig , ax = plt.subplots(1,2,figsize=(8,8))
-                    ax = ax.flatten()
-                    #inter Y
-                    temp_df = self.data[['Customer Status','Internet Service']]
-                    cond= self.data['Internet Service'] == 'Yes'
-                    temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
-                    utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[0],title=f'Users with \nInternet Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
-                    
-                    #inter N
-                    temp_df = self.data[['Customer Status','Internet Service']]
-                    cond= self.data['Internet Service'] == 'No'
-                    temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
-                    utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[1],title=f'Users with \nInternet Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
-                    fig.patch.set_alpha(0.0)
-                    st.pyplot()
+                fig , ax = plt.subplots(1,2,figsize=(8,8))
+                ax = ax.flatten()
+                #inter Y
+                temp_df = self.data[['Customer Status','Internet Service']]
+                cond= self.data['Internet Service'] == 'Yes'
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[0],title=f'Users with \nInternet Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
+                
+                #inter N
+                temp_df = self.data[['Customer Status','Internet Service']]
+                cond= self.data['Internet Service'] == 'No'
+                temp_df = temp_df['Customer Status'].apply(lambda x:'Not churned' if x != 'Churned' else x)
+                utils.cat_comp_wheel_chart(temp_df.value_counts(normalize=True).sort_index(),ax[1],title=f'Users with \nInternet Service\n({len(temp_df)} of {len(self.data)} Total users)',colors=[self.cat_colors[-1],self.cat_colors[1]],fontdict={ 'color': 'w','weight': 'bold','size': font_s })
+                fig.patch.set_alpha(0.0)
+                st.pyplot()
                 #internet data
                 with cols[1]:
-                    pass
-                                   
+                    cond= (self.data['Internet Service'] == 'Yes')
+                    cols = ['Internet Type','Online Security', 'Online Backup', 'Device Protection Plan', 'Premium Tech Support', 
+                        'Streaming TV', 'Streaming Movies', 'Streaming Music', 'Unlimited Data']
+
+                    utils.plot_stacked_bars_dist_churned(self.data[cond],cols=cols,colors=[self.cat_colors[-1],self.cat_colors[1]],figsize=(6,8))
+                    st.markdown('#### Proporción de churned vs stayed por servicio de internet')
+                    st.pyplot()
+        elif filtro == 'Pagos':
+            # ['Contract', 'Paperless Billing', 'Payment Method']     
+            fig , ax = plt.subplots(1,3,figsize=(18,6))
+            ax = ax.flatten()
+            st.pyplot()
+
+            fig , ax = plt.subplots(1,4,figsize=(12,3))
+            ax = ax.flatten()
+            st.pyplot()
