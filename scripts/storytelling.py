@@ -104,19 +104,21 @@ class StoryTelling:
             st.pyplot()
 
         with cols[0]:
-            fig, ax = plt.subplots(figsize=(8,8))
+            # fig, ax = plt.subplots(figsize=(8,8))
             if motivo != 'All':
-                utils.plot_scatter_map(self.data[(self.data['Customer Status']=='Churned') & (self.data['Churn Category']==motivo)],title="Distribución espacial de los churned",alpha=0.2,
-                                    ax = ax,dot_color=self.cat_colors[-1],land_color=self.div_colors[4],water_col=self.cat_colors[4])
+                # utils.plot_scatter_map(self.data[(self.data['Customer Status']=='Churned') & (self.data['Churn Category']==motivo)],title="Distribución espacial de los churned",alpha=0.2,
+                #                     ax = ax,dot_color=self.cat_colors[-1],land_color=self.div_colors[4],water_col=self.cat_colors[4])
                 # plt.savefig(f'./assets/imgs/{self.cat_colors[0]}_mapa_{motivo}.png',transparent=True)
-                # st.image(f'./assets/imgs/{self.cat_colors[0]}_mapa_{motivo}.png',use_column_width='always')
+                st.markdown(f'### Distribución espacial de los churned para {motivo}')
+                st.image(f'./assets/imgs/{self.cat_colors[0]}_mapa_{motivo}.png',use_column_width='always')
             else:
-                utils.plot_scatter_map(self.data[(self.data['Customer Status']=='Churned')],title="Distribución espacial de los churned",alpha=0.2,
-                                    ax = ax,dot_color=self.cat_colors[-1],land_color=self.div_colors[4],water_col=self.cat_colors[4])
-                # plt.savefig(f'./assets/imgs/{self.cat_colors[0]}_mapa_all.png',transparent=True)
-                # st.image(f'./assets/imgs/{self.cat_colors[0]}_mapa_all.png',use_column_width='always')
-            fig.patch.set_alpha(0.0)
-            st.pyplot()
+                # utils.plot_scatter_map(self.data[(self.data['Customer Status']=='Churned')],title="Distribución espacial de los churned",alpha=0.2,
+                #                     ax = ax,dot_color=self.cat_colors[-1],land_color=self.div_colors[4],water_col=self.cat_colors[4])
+                # # plt.savefig(f'./assets/imgs/{self.cat_colors[0]}_mapa_all.png',transparent=True)
+                st.markdown('### Distribución espacial de los churned')
+                st.image(f'./assets/imgs/{self.cat_colors[0]}_mapa_all.png',use_column_width='always')
+            # fig.patch.set_alpha(0.0)
+            # st.pyplot()
         
         st.markdown('''
         Las zonas mas pobladas del estado son las mas affectadas principalmente los condados de San Diego y Los Angeles los cuales representan alrededor del 30% de los usuarios perdidos.

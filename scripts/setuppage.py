@@ -46,8 +46,8 @@ class SetupPage:
         st.title(self.page_txt[self.lang]['color_title'])
         cols = st.columns(3, gap="small")
         with cols[0]:
-            choice = st.selectbox(self.page_txt[self.lang]['pallete_selector_label'],['default','protanopia','deuteranopia','tritanopia','achromatopsia',
-                                                                                        'protanomaly','deuteranomaly','tritanomaly','achromatomaly'])
+            choice = st.selectbox(self.page_txt[self.lang]['pallete_selector_label'],['default','protanopia','deuteranopia','tritanopia','achromatopsia'])
+        # ,'protanomaly','deuteranomaly','tritanomaly','achromatomaly'])
             if choice == 'default':
                 cat_palette = ["#6cd4c5","#a3ea63","#cf75a4","#2a6d76","#25b7f1","#849ab7","#e27c7c"]
                 div_palette = ["#e27c7c","#b76a6a","#8b5858","#5f4646","#333333","#425c58","#50847c","#5eaca1","#6cd4c5"]
@@ -63,18 +63,18 @@ class SetupPage:
             elif choice == 'achromatopsia':
                 cat_palette = ["#b3b3b3","#c5c5c5","#959595","#595959","#919191","#969696","#9a9a9a"]
                 div_palette = ["#9a9a9a","#818181","#676767","#4d4d4d","#323232","#535353","#737373","#939393","#b3b3b3"]
-            elif choice == 'protanomaly':
-                cat_palette = ["#7fb1c6","#afd273","#be929e","#365674","#3f86e9","#8892b3","#cf9d7c"]
-                div_palette = ["#cf9d7c","#a8836a","#816858","#5a4e46","#323333","#465358","#59727d","#6c92a2","#7fb1c6"]
-            elif choice == 'deuteranomaly':
-                cat_palette = ["#80b9c7","#b1d776","#bd8c9d","#375b74","#4291e8","#8894b2","#cd967c"]
-                div_palette = ["#cd967c","#a77d69","#806558","#5a4c46","#333333","#475558","#5a767d","#6d97a2","#80b9c7"]
-            elif choice == 'tritanomaly':
-                cat_palette = ["#6fcfc7","#a5c57b","#cc819b","#2c6f74","#29c6e6","#84a1b1","#de7c7c"]
-                div_palette = ["#de7c7c","#b46a69","#895858","#5e4646","#333332","#425a58","#51817d","#60a9a3","#6fcfc7"]
-            elif choice == 'achromatomaly':
-                cat_palette = ["#92c2bb","#b5d698","#af869b","#446266","#60a2bc","#8e98a5","#bb8c8c"]
-                div_palette = ["#bb8c8c","#997676","#776060","#554a4a","#333332","#4b5755","#637b77","#7b9e99","#92c2bb"]
+            # elif choice == 'protanomaly':
+            #     cat_palette = ["#7fb1c6","#afd273","#be929e","#365674","#3f86e9","#8892b3","#cf9d7c"]
+            #     div_palette = ["#cf9d7c","#a8836a","#816858","#5a4e46","#323333","#465358","#59727d","#6c92a2","#7fb1c6"]
+            # elif choice == 'deuteranomaly':
+            #     cat_palette = ["#80b9c7","#b1d776","#bd8c9d","#375b74","#4291e8","#8894b2","#cd967c"]
+            #     div_palette = ["#cd967c","#a77d69","#806558","#5a4c46","#333333","#475558","#5a767d","#6d97a2","#80b9c7"]
+            # elif choice == 'tritanomaly':
+            #     cat_palette = ["#6fcfc7","#a5c57b","#cc819b","#2c6f74","#29c6e6","#84a1b1","#de7c7c"]
+            #     div_palette = ["#de7c7c","#b46a69","#895858","#5e4646","#333332","#425a58","#51817d","#60a9a3","#6fcfc7"]
+            # elif choice == 'achromatomaly':
+            #     cat_palette = ["#92c2bb","#b5d698","#af869b","#446266","#60a2bc","#8e98a5","#bb8c8c"]
+            #     div_palette = ["#bb8c8c","#997676","#776060","#554a4a","#333332","#4b5755","#637b77","#7b9e99","#92c2bb"]
             color_palette_menu(cat_palette, div_palette)
 
             if st.button(self.page_txt[self.lang]['apply_config_button']):
