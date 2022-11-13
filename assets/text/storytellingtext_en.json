@@ -1,0 +1,10 @@
+{
+    "page_header":"Data Info\n---------",
+    "dataset_source":"The data is from a Californian Telecom from Q2 of 2022\nThe dataset source comes from [kaggle]('https://www.kaggle.com/datasets/shilongzhuang/telecom-customer-churn-by-maven-analytics').\n>\nThe Column 'County' was created with data from [geographic.org]('https://geographic.org/streetview/usa/ca/') with the porpuse of separating the churned regions in less groups",
+    "types_of_client":"#### There are 3 types of clients:\n* **Stayed**: The users that stayed in the service.\n* **Joined**: New users\n * **Churned:** Users that left the service",
+    "client_frequency":"### Type of client frequency in the dataset",
+    "unique_title":"### Number of unique users and dataset shape",
+    "unique_txt":"* **Unique Clients: {}**\n* **Shape: {}**",
+    "null_amount":"### Amount of nulls in the dataset",
+    "column_info":"### Column info\n* **Customer Status:** if the client Joined, Stayed, Churned\n* **Churn Category:** under what type of churn reason family belongs (Competitor, Price, etc)\n* **Churn Reason:** The specific reason why he client churned\n* **Gender, Age, Married, Number of Dependents:** Personal data of the user\n* **City, Zip Code, Latitude, Longitude, County:** Geospatial data of the user.\n* **Number of Referrals, Tenure in Months:** How much people the user recomended and how much time in the service does the client have.\n* **Offer, Phone Service, Multiple Lines, Avg Monthly Long Distance Charges:** which payment offer is the client in and phone service data.\n* **Internet Service, Internet Type, Avg Monthly GB Download:** Internet service related columns.\n* **Online Security, Online Backup, Device Protection Plan, Premium Tech Support, Streaming TV, Streaming Movies, Streaming Music, Unlimited Data:** Aditional services that the user has.\n* **Contract, Paperless Billing, Payment Method, Monthly Charge:** How and how much is the client paying.\n* **Total Charges, Total Refunds, Total Extra Data Charges, Total Long Distance Charges, Total Revenue:** How much was charged to the client."
+}

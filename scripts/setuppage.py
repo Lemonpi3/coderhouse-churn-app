@@ -9,44 +9,39 @@ class SetupPage:
         with open("appconfig.json", "r") as f:
             config = json.load(f)
         self.lang = config['lang']
+        
+        if self.lang == "EN":
+            with open("./assets/text/configtext_en.json", "r", encoding="utf-8") as f:
+                self.page_txt = json.load(f)
+        if self.lang == "ES":
+            with open("./assets/text/configtext_es.json", "r", encoding="utf-8") as f:
+                self.page_txt = json.load(f)
 
-        self.page_txt = {
-            'EN':{
-                'page_header':'Setup De la app\n---------',
-                'page_info':'Esta pagina es para configurar algunas settings de la app',
-                'color_title':'Configuración de colores',
-                'pallete_selector_label':'selecciona las paletas de color',
-                'apply_config_button':'aplicar configuración',
-                'cat_c_txt':'Categorical Color Pallet',
-                'div_c_txt':'Diverging Color Palette',
-            },
-            'ES':{
-                'page_header':'Setup De la app\n---------',
-                'page_info':'Esta pagina es para configurar algunas settings de la app',
-                'color_title':'Configuración de colores',
-                'pallete_selector_label':'selecciona las paletas de color',
-                'apply_config_button':'aplicar configuración',
-                'cat_c_txt':'Colores para paleta categorica',
-                'div_c_txt':'Colores para paleta divergente',
-            }
-        }
+
         self.display_page()
 
     def display_page(self):
         def color_palette_menu(cat_palette,div_palette):
             fig,ax = plt.subplots(figsize=(20,1))
-            st.text(self.page_txt[self.lang]['cat_c_txt'])
+            st.text(self.page_txt['cat_c_txt'])
             st.pyplot(utils.palplot(cat_palette,size=10,ax=ax, fig=fig))
-            st.text(self.page_txt[self.lang]['div_c_txt'])
+            st.text(self.page_txt['div_c_txt'])
             fig,ax = plt.subplots(figsize=(20,1))
             st.pyplot(utils.palplot(div_palette[::-1],size=10,ax=ax, fig=fig))
 
-        st.header(self.page_txt[self.lang]['page_header'])
-        st.info(self.page_txt[self.lang]['page_info'])
-        st.title(self.page_txt[self.lang]['color_title'])
-        cols = st.columns(3, gap="small")
+        st.header(self.page_txt['page_header'])
+        st.info(self.page_txt['page_info'])
+
+        cols = st.columns(2, gap="small")
         with cols[0]:
-            choice = st.selectbox(self.page_txt[self.lang]['pallete_selector_label'],['default','protanopia','deuteranopia','tritanopia','achromatopsia'])
+            st.title(self.page_txt['color_title'])
+        with cols[1]:
+            st.title(self.page_txt['lang_select_title'])
+            
+        cols = st.columns(2, gap="small")
+        with cols[0]:
+
+            choice = st.selectbox(self.page_txt['pallete_selector_label'],['default','protanopia','deuteranopia','tritanopia','achromatopsia'])
         # ,'protanomaly','deuteranomaly','tritanomaly','achromatomaly'])
             if choice == 'default':
                 cat_palette = ["#6cd4c5","#a3ea63","#cf75a4","#2a6d76","#25b7f1","#849ab7","#e27c7c"]
@@ -76,15 +71,23 @@ class SetupPage:
             #     cat_palette = ["#92c2bb","#b5d698","#af869b","#446266","#60a2bc","#8e98a5","#bb8c8c"]
             #     div_palette = ["#bb8c8c","#997676","#776060","#554a4a","#333332","#4b5755","#637b77","#7b9e99","#92c2bb"]
             color_palette_menu(cat_palette, div_palette)
+        with cols[1]:
+            lang = st.selectbox(self.page_txt['lang_select_box'],["ES","EN"],0)
 
-            if st.button(self.page_txt[self.lang]['apply_config_button']):
-                with open("appconfig.json", "r") as f:
-                    data = json.load(f)
-                data['cat_palette']= cat_palette
-                data['div_palette']= div_palette
+        if st.button(self.page_txt['apply_config_button']):
+            with open("appconfig.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+            data['cat_palette']= cat_palette
+            data['div_palette']= div_palette
 
-                with open("appconfig.json", "w") as jsonfile:
-                    json_conf = json.dump(data, jsonfile,indent=0)
-                    jsonfile.close()
-
+            with open("appconfig.json", "w", encoding="utf-8") as jsonfile:
+                json_conf = json.dump(data, jsonfile,indent=0)
+                jsonfile.close()
+            with open("appconfig.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+            data['lang']= lang
+            with open("appconfig.json", "w", encoding="utf-8") as jsonfile:
+                json_conf = json.dump(data, jsonfile, indent=0)
+                jsonfile.close()
+            st.info(self.page_txt['updated_config'])
         

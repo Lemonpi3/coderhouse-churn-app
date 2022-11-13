@@ -1,0 +1,12 @@
+{
+"page_header":"Setup De la app\n---------",
+"page_info":"Esta pagina es para configurar algunas settings de la app",
+"color_title":"Configuración de colores",
+"pallete_selector_label":"selecciona las paletas de color",
+"apply_config_button":"aplicar configuración",
+"cat_c_txt":"Categorical Color Pallet",
+"div_c_txt":"Diverging Color Palette",
+"lang_select_title":"Language",
+"lang_select_box":"Select language",
+"updated_config":"Configuration successful, it will be aplied when you exit this page."
+}

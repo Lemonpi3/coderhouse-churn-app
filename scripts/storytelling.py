@@ -43,9 +43,9 @@ class StoryTelling:
                 'revenue_title':'### ¿Pero, Cuánto dinero representan estos usuarios churned?',
                 'revenue_report':"""
                     El total de ganancias de este cuatrimestre fue de 
-                    <font color='lime'>\$21371131.69</font>
+                    <font color='lime'>\$21.371.131,69</font>
                     pero las ganancias provenientes de los usuarios que dejaron el servicio fueron de 
-                    <font color='red'>\$3684459.82</font> que representan
+                    <font color='red'>\$3.684.459,82</font> que representan
                     <font color='red'>17.24%</font> del total.
                     """,
                 'revenue_graph_labels':['Ganancias de Usuarios\n Retenidos + Nuevos','Ganancias de los \nusuarios Perdidos'],
@@ -110,7 +110,7 @@ class StoryTelling:
                 #                     ax = ax,dot_color=self.cat_colors[-1],land_color=self.div_colors[4],water_col=self.cat_colors[4])
                 # plt.savefig(f'./assets/imgs/{self.cat_colors[0]}_mapa_{motivo}.png',transparent=True)
                 st.markdown(f'### Distribución espacial de los churned para {motivo}')
-                htp= f'https://raw.githubusercontent.com/Lemonpi3/coderhouse-churn-app/master/assets/imgs/{self.cat_colors[0][1:7]}_mapa_{motivo}.png'
+                htp= f'https://raw.githubusercontent.com/Lemonpi3/coderhouse-churn-app/master/assets/imgs/mapa/{self.cat_colors[0][1:7]}_mapa_{motivo}.png'
                 st.image(htp,use_column_width='always')
                 # st.image(f'./assets/imgs/testimg.png',use_column_width='always') #Test img
             else:
@@ -118,7 +118,7 @@ class StoryTelling:
                 #                     ax = ax,dot_color=self.cat_colors[-1],land_color=self.div_colors[4],water_col=self.cat_colors[4])
                 # # plt.savefig(f'./assets/imgs/{self.cat_colors[0]}_mapa_all.png',transparent=True)
                 st.markdown('### Distribución espacial de los churned')
-                htp = f'https://raw.githubusercontent.com/Lemonpi3/coderhouse-churn-app/master/assets/imgs/{self.cat_colors[0][1:7]}_mapa_All.png'
+                htp = f'https://raw.githubusercontent.com/Lemonpi3/coderhouse-churn-app/master/assets/imgs/mapa/{self.cat_colors[0][1:7]}_mapa_All.png'
                 st.image(htp,use_column_width='always')
                 # st.image(f'./assets/imgs/testimg.png',use_column_width='always') #Test img
 
