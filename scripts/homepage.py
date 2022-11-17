@@ -1,6 +1,7 @@
 import streamlit as st
 from scripts import utils
 import json
+import streamlit.components.v1 as components
 
 class HomePage():
     def __init__(self) -> None:
@@ -33,4 +34,4 @@ class HomePage():
         st.write(self.page_txt['page_txt'])
         st.info(self.page_txt['page_info'])
         st.markdown("## Resumen del proyecto a modo de presentación")
-        st.markdown(self.presentacion,unsafe_allow_html=True)
+        components.html(self.presentacion,height=700)
