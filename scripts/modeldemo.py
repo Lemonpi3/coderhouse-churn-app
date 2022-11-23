@@ -74,7 +74,7 @@ class DemoPage():
 
     def display_page(self):
         st.title("Aplicación del modelo")
-        st.markdown("El modelo esta aplicado en una base de datos de sqllite con flask como api.\n>\nPuedes probarlo en la  [Notebook](https://colab.research.google.com/drive/1roIA3LR2fZoZzlAq2NSs2g5gWIRLzFKI?usp=sharing)")
+        st.markdown("El modelo esta aplicado en una base de datos de sqllite con flask como api.\n>\nPuedes probarlo en la  [Notebook](https://colab.research.google.com/drive/1roIA3LR2fZoZzlAq2NSs2g5gWIRLzFKI)")
         # st.title("Prueba el modelo desde aca")
         # demo_data = self.data.sample(20)
         # st.markdown("## Data inicial")
