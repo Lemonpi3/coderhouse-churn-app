@@ -3,11 +3,14 @@ This is one of my Coderhouse proyects, it's not fully finished yet (I'm still do
 the main notebook is in spanish. 
 
 I analized the dataset of a telecomunications company to get insights about how bad, 
-which areas and what was causing the churn problem for the company. Then I built 2 models concatenated with each other
-to help with their churn problem. 
+which areas and what was causing the churn problem for the company.
 
-One that predicts if a client is going to churn or not. And the other, if the 
-first model predicts a churn, predicts the churn reason category (Competition, Dissatisfaction, Attitude, Price and Other).
+To tackle the business problem I made 4 models:
+* 2 clasification models:
+  - First one is a Binary clasification model: Predicts the churn probability of a user.
+  - The second one is a multiclasification model: Predicts the churn type category. Is concatenated to the first model, if it predicts a churn it predicts the probabilities of the categories
+* 1 regression model: Predicts the total revenue that the user will yield in the quarter, with the main goal of setting priorities in churn savings efforts (it's not the same to lose a user that just pays the minimum than loosing a whale).
+* 1 clustering model: Segmentates the users in 4 clusters with the goal of helping the company to give a more personalized service to the customers and increase tenure.
 
 I also made an app that contains the storytelling in a blog style and a canva presentation. 
 
@@ -17,3 +20,5 @@ As for the app itself I've made it using the streamlit library.
 ## Links
 * App https://lemonpi3-coderhouse-churn-app-app-oopeoj.streamlit.app/
 * Notebook https://colab.research.google.com/drive/1roIA3LR2fZoZzlAq2NSs2g5gWIRLzFKI?usp=sharing
+
+**For more info about the dataset or models check the app**
