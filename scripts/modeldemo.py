@@ -6,19 +6,20 @@ import pandas as pd
 
 class DemoPage():
     def __init__(self) -> None:
+        self.data = pd.read_csv("./assets/data/dataset.csv")
+
         with open("appconfig.json", "r") as f:
             self.config = json.load(f)
-        # self.data = pd.read_csv("./assets/data/dataset.csv")
 
-        # with open("./assets/models/modelo_1.pkl", "rb") as f:
-        #     self.modelo_1 = pickle.load(f)
+        with open("./assets/models/modelo_1.pkl", "rb") as f:
+            self.modelo_1 = pickle.load(f)
 
-        # with open("./assets/models/modelo_2.pkl", "rb") as f:
-        #     self.modelo_2 = pickle.load(f)
+        with open("./assets/models/modelo_2.pkl", "rb") as f:
+            self.modelo_2 = pickle.load(f)
 
         # with open("./assets/models/ModelsPipeline.pkl", "rb") as f:
         #     self.pipeline = pickle.load(f)
-        
+     
         self.display_page()
 
     def predict_customer(self,df:pd.DataFrame)-> pd.DataFrame:
