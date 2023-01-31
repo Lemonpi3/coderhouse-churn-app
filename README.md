@@ -18,7 +18,7 @@ The models are deployed in a flask api that uses a Sqllite database to store the
 As for the app itself I've made it using the streamlit library.
 
 ## Links
-* App https://lemonpi3-coderhouse-churn-app-app-oopeoj.streamlit.app/
+* App https://lemonpi3-coderhouse-churn-app-app-7t76yk.streamlit.app/
 * Notebook https://colab.research.google.com/drive/1roIA3LR2fZoZzlAq2NSs2g5gWIRLzFKI?usp=sharing
 
 **For more info about the dataset or models check the app**
