@@ -379,9 +379,11 @@ class StoryTelling:
         ### Visto todo esto, ¿qué mas podemos hacer para solucionar este problema?
         
         Ademas de las cosas que vimos recien si queremos mejorar podriamos hacer 2 cosas mas:
-        1) Podemos crear 2 modelos de machine learning que nos ayudarian a minimizar lo mas posible esta perdida de clientes:
+        1) Podemos crear 4 modelos de machine learning que nos ayudarian a minimizar lo mas posible esta perdida de clientes:
         * Un modelo de clasificación simple que nos entrega la probabilidad de que un cliente deje el servicio.
-        * Y otro de clasificación multivariada que , si el primero predice que deja, prediga la razon mas probable de por la que lo va a dejar.
+        * otro de clasificación multivariada que , si el primero predice que deja, prediga la razon mas probable de por la que lo va a dejar.
+        * Un modelo de clustering para separar a los usuarios en grupos y dar un servicio mas personalizado con el fin de aumentar la tenure.
+        * un modelo de regresión que prediga las ganancias que podria dejar el usuario en el cuatrimestre, con el fin de establecer prioridades a la hora de combatir estos churned.
         Con la información que den estos modelos se podra redirigir al departamento correspondiente dentro de la empresa con el fin de evitar que ese cliente deje el servicio.
         
         2) Aumentar y mejorar el marketing de la empresa con el fin de atraer a mas usuarios. 

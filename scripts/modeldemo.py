@@ -153,6 +153,7 @@ class DemoPage():
             model_2_predict = self.modelo_2.predict(df_input)
             model_3_predict = self.modelo_3.predict(df_input)[0]
             model_4_predict = self.modelo_4.predict(df_input)[0]
+            
             st.markdown(f'### **Modelo 1 (Chance de churnear): {round(model_1_predict,2)}%**')
             st.markdown(f'### **Modelo 2 (% Razones posibles de churn):**')
             st.dataframe(model_2_predict)
